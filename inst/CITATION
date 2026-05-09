@@ -1,0 +1,16 @@
+citHeader("To cite irps in publications, use:")
+
+citEntry(
+  entry    = "Manual",
+  title    = "irps: Immune Response Potential Scoring for Immunotherapy Biomarker Evaluation",
+  author   = personList(as.person("Maynard")),
+  year     = "2026",
+  note     = sprintf("R package version %s", meta$Version),
+  url      = "https://github.com/maynard/irps",
+  textVersion = sprintf(
+    "Maynard (2026). irps: Immune Response Potential Scoring for Immunotherapy Biomarker Evaluation. R package version %s. https://github.com/maynard/irps",
+    meta$Version
+  )
+)
+
+citFooter("The IRPS methodology is described in the accompanying publication. Please cite both the package and the associated paper when using IRPS in your research.")

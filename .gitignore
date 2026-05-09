@@ -1,0 +1,17 @@
+# R
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+*.Rproj
+
+# Package build artifacts
+irps*.tar.gz
+irps*.tgz
+irps.Rcheck/
+
+# macOS
+.DS_Store
+
+# Compiled vignettes
+inst/doc/

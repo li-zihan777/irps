@@ -1,0 +1,48 @@
+Package: irps
+Type: Package
+Title: Immune Response Potential Scoring for Immunotherapy Biomarker Evaluation
+Version: 0.1.0
+Authors@R: c(
+    person("Maynard", , ,
+           email = "maynard@example.com",
+           role = c("aut", "cre"),
+           comment = c(ORCID = ""))
+  )
+Description: Computes the Immune Response Potential Score (IRPS) from
+    proteomics or transcriptomics data to evaluate PD-1/PD-L1 immunotherapy
+    response potential. The package provides 18 curated immune gene sets,
+    single-sample GSEA-based scoring, a 7-dimension immune microenvironment
+    portrait decomposition, and immune phenotype classification (Inflamed /
+    Excluded / Desert) adapted from Chen & Mellman (Nature, 2017). Designed
+    for body-fluid proteomics but compatible with any normalized expression
+    matrix. Includes comprehensive visualization functions and optional
+    MSigDB Hallmark validation.
+License: MIT + file LICENSE
+URL: https://github.com/maynard/irps
+BugReports: https://github.com/maynard/irps/issues
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Imports:
+    dplyr,
+    ggplot2,
+    GSVA,
+    GSEABase,
+    pheatmap,
+    RColorBrewer,
+    scales,
+    stats,
+    tibble,
+    tidyr,
+    utils
+Suggests:
+    fmsb,
+    knitr,
+    msigdbr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+VignetteBuilder: knitr
+Depends:
+    R (>= 4.1.0)

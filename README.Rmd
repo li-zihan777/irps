@@ -1,0 +1,124 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# irps: Immune Response Potential Scoring
+
+[![R-CMD-check](https://github.com/maynard/irps/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/maynard/irps/actions/workflows/R-CMD-check.yaml)
+
+The **irps** R package computes the **Immune Response Potential Score (IRPS)** from proteomics or transcriptomics data to evaluate PD-1/PD-L1 immunotherapy response potential. It provides:
+
+- **18 curated immune gene sets** spanning antigen presentation, immune cell populations, immunosuppression, and inflammatory pathways
+- **Single-sample GSEA** for per-sample immune microenvironment profiling
+- **IRPS composite score**: a single scalar balancing favorable vs unfavorable immune signals
+- **7-dimension portrait decomposition** for interpretable immune characterization
+- **Immune phenotype classification** (Inflamed / Excluded / Desert), adapted from Chen & Mellman (2017) for body-fluid proteomics
+- **MSigDB Hallmark validation** for external benchmarking of custom gene sets
+- **Comprehensive visualization suite**: boxplots, heatmaps, radar charts, dimension panels
+
+## Installation
+
+```r
+# Install from GitHub
+if (!requireNamespace("remotes", quietly = TRUE))
+    install.packages("remotes")
+remotes::install_github("maynard/irps")
+```
+
+## Quick Start
+
+```{r, eval = FALSE}
+library(irps)
+
+# Get the built-in immune gene sets
+gs <- get_immune_gene_sets()
+names(gs)
+# [1] "01_Antigen_Presentation"  "02_MHC_I_Core"           ...
+
+# Example: proteomics data
+# expr_mat: proteins × samples matrix (normalized, e.g., median-centered log2)
+# gene_map: maps gene symbols to protein IDs in your data
+head(gene_map)
+#   Gene Protein
+# 1  B2M  P61769
+# 2 HLA-A P04439
+# ...
+
+result <- compute_irps(
+  expr_mat  = expr,
+  gene_map  = gene_map,
+  platform  = "proteomics"
+)
+
+# Inspect results
+print(result)
+summary(result)
+
+# Visualize
+plot(result, type = "boxplot")
+plot(result, type = "heatmap")
+plot(result, type = "radar_favorable")
+```
+
+## Core Functions
+
+| Function | Description |
+|----------|-------------|
+| `compute_irps()` | Main function: run ssGSEA and compute IRPS |
+| `decompose_portrait()` | Decompose IRPS into 7 interpretable dimensions |
+| `classify_phenotype()` | Classify samples as Inflamed/Excluded/Desert |
+| `validate_hallmark()` | Validate custom gene sets against MSigDB Hallmarks |
+| `get_immune_gene_sets()` | Return the 18 built-in immune gene sets |
+| `map_genes_to_features()` | Map gene symbols to feature IDs in expression data |
+
+## Visualization Functions
+
+| Function | Output |
+|----------|--------|
+| `plot_irps_boxplot()` | Boxplot of IRPS scores by group |
+| `plot_irps_heatmap()` | Clustered heatmap of ssGSEA scores |
+| `plot_irps_radar()` | Radar chart of gene set scores |
+| `plot_portrait_panel()` | 6-dimension faceted boxplot panel |
+| `plot_phenotype_bar()` | Stacked bar chart of immune phenotypes |
+| `plot_irps_scatter()` | IRPS vs individual biomarker scatter |
+
+## IRPS Methodology
+
+**IRPS** = mean(5 Favorable gene sets) − mean(3 Unfavorable gene sets)
+
+**Favorable (higher = better for immunotherapy):**
+1. Antigen Presentation (MHC-I/B2M/TAP pathway)
+2. MHC-I Core
+3. IFN-γ Response
+4. Cytotoxic Potential (surrogate)
+5. Chemokine/Inflammatory
+
+**Unfavorable (higher = worse for immunotherapy):**
+1. Immunosuppression (TGFB, CD47, S100A8/A9, collagens)
+2. Stromal/CAF barrier
+3. MDSC/Neutrophil infiltration
+
+The score integrates these 8 dimensions into a single value where higher IRPS indicates a more favorable immune microenvironment for PD-1/PD-L1 blockade therapy.
+
+## References
+
+- Sharma P, et al. Primary, Adaptive, and Acquired Resistance to Cancer Immunotherapy. *Cell*. 2017;168(4):707-723.
+- Kalbasi A, Ribas A. Tumour-intrinsic resistance to immune checkpoint blockade. *Nat Rev Immunol*. 2020;20(1):25-39.
+- Chen DS, Mellman I. Elements of cancer immunity and the cancer-immune set point. *Nature*. 2017;541(7637):321-330.
+- Zaretsky JM, et al. Mutations Associated with Acquired Resistance to PD-1 Blockade in Melanoma. *N Engl J Med*. 2016;375(9):819-829.
+- Hänzelmann S, et al. GSVA: gene set variation analysis. *BMC Bioinformatics*. 2013;14:7.
+
+## License
+
+MIT

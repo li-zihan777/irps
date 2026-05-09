@@ -1,0 +1,178 @@
+---
+title: "Introduction to irps"
+author: "Maynard"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to irps}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Overview
+
+The `irps` package provides tools for evaluating PD-1/PD-L1 immunotherapy response potential from proteomics or transcriptomics expression data. The core metric, the **Immune Response Potential Score (IRPS)**, integrates information from 18 curated immune gene sets into a single interpretable scalar.
+
+This vignette demonstrates the complete workflow:
+1. Preparing input data
+2. Computing IRPS
+3. Decomposing the immune portrait
+4. Classifying immune phenotypes
+5. Validating against MSigDB Hallmarks
+6. Generating publication-quality visualizations
+
+## 1. Preparing Input Data
+
+You need two inputs:
+- **Expression matrix**: features (proteins or genes) × samples, normalized
+- **Gene mapping table**: maps HGNC gene symbols to feature IDs in your expression matrix
+
+```{r setup}
+library(irps)
+
+# Get the built-in immune gene sets
+gs <- get_immune_gene_sets()
+cat("Total gene sets:", length(gs), "\n")
+cat("Gene set sizes:", lengths(gs), "\n")
+```
+
+### Simulated example data
+
+```{r simdata}
+set.seed(2024)
+
+# Simulate 200 proteins × 50 samples
+n_proteins <- 200
+n_samples <- 50
+protein_ids <- paste0("P", seq_len(n_proteins))
+sample_ids <- paste0("S", seq_len(n_samples))
+
+# Create expression matrix with some structure
+expr_mat <- matrix(rnorm(n_proteins * n_samples, mean = 10, sd = 2),
+                   nrow = n_proteins, ncol = n_samples)
+rownames(expr_mat) <- protein_ids
+colnames(expr_mat) <- sample_ids
+
+# Create gene mapping: some of our 200 proteins map to immune genes
+known_immune_genes <- unique(unlist(gs))
+# Pick first 140 immune genes and assign them to our protein IDs
+mapped_genes <- known_immune_genes[1:min(140, length(known_immune_genes))]
+gene_map <- data.frame(
+  Gene      = mapped_genes,
+  FeatureID = protein_ids[seq_along(mapped_genes)],
+  stringsAsFactors = FALSE
+)
+
+# Give some structure: inject B2M and HLA-A signal into specific samples
+b2m_prot <- gene_map$FeatureID[gene_map$Gene == "B2M"]
+hlaa_prot <- gene_map$FeatureID[gene_map$Gene == "HLA-A"]
+if (length(b2m_prot) > 0) {
+  expr_mat[b2m_prot, 1:15] <- expr_mat[b2m_prot, 1:15] + 3  # higher in first 15
+}
+if (length(hlaa_prot) > 0) {
+  expr_mat[hlaa_prot, 1:15] <- expr_mat[hlaa_prot, 1:15] + 2.5
+}
+
+# Create synthetic group labels (e.g., subtypes)
+groups <- setNames(
+  c(rep("Subtype1", 15), rep("Subtype2", 18), rep("Subtype3", 17)),
+  sample_ids
+)
+
+head(gene_map)
+dim(expr_mat)
+```
+
+## 2. Computing IRPS
+
+The `compute_irps()` function is the main entry point. It:
+1. Maps gene symbols to feature IDs in your expression data
+2. Runs ssGSEA for all available gene sets
+3. Computes the IRPS composite score
+
+```{r compute}
+result <- compute_irps(
+  expr_mat  = expr_mat,
+  gene_map  = gene_map,
+  platform  = "proteomics",
+  groups    = groups,
+  verbose   = FALSE
+)
+
+print(result)
+```
+
+## 3. Decomposing the Immune Portrait
+
+The `decompose_portrait()` function breaks IRPS into 6 interpretable biological dimensions:
+
+```{r portrait}
+portrait <- decompose_portrait(result, expr_mat = expr_mat, gene_map = gene_map)
+head(portrait[, 1:5])
+```
+
+## 4. Classifying Immune Phenotypes
+
+```{r phenotype}
+pheno <- classify_phenotype(result)
+table(pheno$Immune_Phenotype, pheno$Subtype)
+```
+
+## 5. Visualization Gallery
+
+### IRPS Boxplot
+
+```{r boxplot, fig.width=5.5, fig.height=5}
+plot(result, type = "boxplot")
+```
+
+### Immune Heatmap
+
+```{r heatmap, fig.width=10, fig.height=6}
+plot(result, type = "heatmap")
+```
+
+### Portrait Dimension Panel
+
+```{r portrait_panel, fig.width=10, fig.height=7}
+plot_portrait_panel(portrait)
+```
+
+### Immune Phenotype Distribution
+
+```{r pheno_bar, fig.width=5.5, fig.height=4.5}
+plot_phenotype_bar(pheno)
+```
+
+### IRPS vs Key Biomarker
+
+```{r scatter, fig.width=6, fig.height=5}
+if ("B2M" %in% gene_map$Gene) {
+  plot_irps_scatter(result, expr_mat, gene_map, "B2M")
+}
+```
+
+## 6. Validating Against MSigDB Hallmarks
+
+*Note: requires the `msigdbr` package to be installed.*
+
+```{r hallmark, eval=FALSE}
+val <- validate_hallmark(result, expr_mat, gene_map)
+
+# Inspect strongest correlations
+cor_mat <- val$correlation_matrix
+cat("Strongest correlation:", max(cor_mat, na.rm = TRUE), "\n")
+```
+
+## Session Information
+
+```{r session}
+sessionInfo()
+```

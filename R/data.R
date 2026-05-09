@@ -1,0 +1,63 @@
+#' Built-in immune gene sets for IRPS computation
+#'
+#' @description
+#' The `irps` package includes a built-in collection of 18 curated immune
+#' gene sets used for ssGSEA-based immune microenvironment profiling. These
+#' are accessed via \code{\link{get_immune_gene_sets}}.
+#'
+#' @details
+#' The 18 gene sets cover the following immune compartments:
+#' \describe{
+#'   \item{01_Antigen_Presentation}{23 genes: HLA class I/II, B2M, TAP1/2,
+#'     TAPBP, CALR, CANX, ERAP1/2, immunoproteasome subunits, CD74}
+#'   \item{02_MHC_I_Core}{7 genes: HLA-A/B/C, B2M, TAP1/2, TAPBP}
+#'   \item{03_IFNgamma_Response}{17 genes: STATs, IRFs, ISG15, GBPs, JAK1/2,
+#'     IFNGR1/2, CXCL10, NLRC5}
+#'   \item{04_Macrophage}{16 genes: CD14, FCGR3A, ITGAM, LST1, AIF1,
+#'     TYROBP, FCER1G, CTSS, LYZ, SPI1, C1Q subunits, APOE, CD68, CSF1R}
+#'   \item{05_MDSC_Neutrophil}{9 genes: S100A8/A9/A12, ARG1, CXCR2,
+#'     MPO, ELANE, FCGR3B, CEACAM8}
+#'   \item{06_Neutrophil}{8 genes: FCGR3B, CXCR2, MPO, ELANE, CEACAM8,
+#'     MMP8/9, OLFM4}
+#'   \item{07_Monocyte}{9 genes: CD14, CD33, FCGR3A, ITGAM, S100A8/A9,
+#'     CCR2, CSF1R, CX3CR1}
+#'   \item{08_B_cell}{7 genes: CD37, MZB1, JCHAIN, SDC1, CD79A/B, MS4A1}
+#'   \item{09_NK_cell}{8 genes: TYROBP, FCER1G, NCAM1, KLRD1, KLRK1,
+#'     CD247, NCR1, NCR3}
+#'   \item{10_Eosinophil}{7 genes: RNASE2/3, EPX, PRG2, CLC, CCR3, SIGLEC8}
+#'   \item{11_DC_cell}{10 genes: ITGAX, WDFY4, FCER1A, LAMP3, CCR7,
+#'     CD1C, BATF3, CLEC10A, CLEC9A, XCR1}
+#'   \item{12_Immunosuppression}{14 genes: CD47, VSIR, TGFB1/2/3,
+#'     ARG1, NT5E, S100A8/A9, COL1A1/A2, COL3A1, FN1, TNC}
+#'   \item{13_Chemokine_Inflammatory}{9 genes: CXCL1/2/5/8/10/17,
+#'     IL1B, TNF, IL6}
+#'   \item{14_Stromal_CAF}{13 genes: COL1A1/A2, COL3A1, FN1, TNC,
+#'     ACTA2, TAGLN, FAP, PDGFRB, TGFB1/2/3, VEGFC}
+#'   \item{15_Cytotoxic_Surrogate}{9 genes: SERPINB9, TNFSF10,
+#'     TNFRSF10A/B, FCER1G, TYROBP, CTSS, LYZ, CST7}
+#'   \item{16_Adhesion_Migration}{7 genes: ICAM1, ITGAL, ITGAM, ITGB2,
+#'     SELL, CD44, CD47}
+#'   \item{17_Complement}{11 genes: C1Q subunits, C2, C3, C4A/B, C5,
+#'     CFB, CFH, CFI}
+#'   \item{18_TLR_Signaling}{12 genes: TLR1/2/3/4/6/8, MYD88,
+#'     CD14, LYZ, IRAK1, IRAK4, TICAM1}
+#' }
+#'
+#' @references
+#' Sharma P, et al. Primary, Adaptive, and Acquired Resistance to Cancer
+#' Immunotherapy. \emph{Cell}. 2017;168(4):707-723.
+#'
+#' Kalbasi A, Ribas A. Tumour-intrinsic resistance to immune checkpoint
+#' blockade. \emph{Nat Rev Immunol}. 2020;20(1):25-39.
+#'
+#' Chen DS, Mellman I. Elements of cancer immunity and the cancer-immune
+#' set point. \emph{Nature}. 2017;541(7637):321-330.
+#'
+#' Zaretsky JM, et al. Mutations Associated with Acquired Resistance to
+#' PD-1 Blockade in Melanoma. \emph{N Engl J Med}. 2016;375(9):819-829.
+#'
+#' @seealso \code{\link{get_immune_gene_sets}} to retrieve the gene sets list.
+#'
+#' @name irps_gene_sets
+#' @keywords internal
+NULL
